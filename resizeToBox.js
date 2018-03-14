@@ -1,83 +1,71 @@
+resizeBoard(wView, hView, wImg, hImg) {
 
+    const propView = wView / hView;
+    const propImg = wImg / hImg;
 
-function resizeToBox(wView, hView, wImg, hImg) {
-  
-  var propView = wView/hView;
-  var propImg = wImg/hImg;
-  
-  var left = 0;
-  var top = 0;
-  var hNew = 0;
-  var wNew = 0;
-  
-  if (propView === propImg) { 
-    if (wImg >= wView) { 
-      //proporções iguais e a imagem maior ou igual ao palco, 
-      //imagem assume dimensões do palco.
-      return [wView, hView, left, top];
-    } else {
-      //proporções iguais e imagem menor que o palco
-      //a imagem preserva suas dimensões e o posicionamento é calculado.
-      left = parseInt((wView - wImg)/2);
-      top = parseInt((hView - hImg)/2);
-      return [wImg, hView, left, top];
-    }
-  }
-  
-  if (propView === 1 ) { // palco quadrado
-    if (wImg > wView || hImg > hView) {
-      if (propImg > 1) { //imagem paisagem   
-        hNew = parseInt(wView / propImg);
-        top = parseInt((hView - hNew)/2);
-        return [wView, hNew, left, top];       
-      }
-      if (propImg < 1) { //imagem retrato
-        wNew = parseInt(wView * propImg);
-        left = parseInt((wView - wNew)/2);
-        return [wNew, hView, left, top];
-      }
-    }
-    left = parseInt((wView - wImg) / 2);
-    top = parseInt((hView - hImg) / 2);
-    return [wImg, hImg, left, top];
-  }
-  
-  if (propImg === 1) {
-    if (propView > 1) {
-      left = parseInt((wView - hView)/2);
-      return [hView, hView, left, top];
-    }
-    if (propView < 1) {
-      top = parseInt((hView - wView)/2);
-      return [wView, wView, left, top];
-    }
-  }
-  
-  
-  if (wImg > wView || hImg > hView) {
-    if (propImg > 1) {
-      hNew = parseInt(wView / propImg);
-      if (hNew > hView) {
-        wNew = parseInt(hView * propImg);
-        return resizeToBox(wView, hView, wNew, hView);
-      }
-      top = parseInt((hView - hNew)/2);
-      return [wView, hNew, left, top];
-    }
-    if (propImg < 1) {
-      wNew = parseInt(hView * propImg);
-      if (wNew > wView) {
-        hNew = parseInt(wView / propImg);
-        return resizeToBox(wView, hView, wView, hNew);
-      }
-      left = parseInt((wView - wNew)/2);
-      return [wNew, hView, left, top];
-    }
-  }
+    let hNew = 0;
+    let wNew = 0;
 
-  left = parseInt((wView - wImg) / 2);
-  top = parseInt((hView - hImg) / 2);
-  return [wImg, hImg, left, top];
-}
+    if ( propView === propImg ) {
+      if ( wImg >= wView ) {
+        // proporções iguais e a imagem maior ou igual ao palco,
+        // imagem assume dimensões do palco.
+        return [ wView, hView ];
+      }
+      // proporções iguais e imagem menor ou igual que o palco
+      // a imagem preserva suas dimensões
+      return [ wImg, hImg ];
+    }
 
-console.log(resizeToBox(100, 400, 200, 200));
+    if ( propView === 1 ) { // palco quadrado
+      if ( wImg > wView || hImg > hView ) {
+        if ( propImg > 1 ) { // imagem paisagem
+          hNew = Math.ceil(wView / propImg);
+          return [ wView, hNew ];
+        }
+        if ( propImg < 1 ) { // imagem retrato
+          wNew = Math.ceil(wView * propImg);
+          return [ wNew, hView ];
+        }
+      }
+      return [ wImg, hImg ];
+    }
+
+    if ( propImg === 1 ) { // imagem quadrada
+      if ( propView > 1 ) {
+        return [ hView, hView ];
+      }
+      if ( propView < 1 ) {
+        return [ wView, wView ];
+      }
+    }
+
+    // proporcoes diferentes
+    if ( hImg > hView || wImg > wView ) {
+      if ( hImg > hView ) {
+        hNew = hView;
+        wNew = Math.ceil(hNew * propImg); // diminui a largura proporcionalemente
+        return [ wNew, hNew ];
+      }
+      if ( wImg > wView ) {
+        wNew = wView;
+        hNew = Math.ceil(wNew / propImg);
+        return [ wNew, hNew ];
+      }
+    }
+
+    if ( hImg < hView || wImg < wView ) {
+      if ( hImg < hView ) {
+        hNew = hView;
+        wNew = Math.ceil(hNew * propImg); // diminui a largura proporcionalemente
+        return [ wNew, hNew ];
+      }
+      if ( wImg < wView ) {
+        wNew = wView;
+        hNew = Math.ceil(wNew / propImg);
+        return [ wNew, hNew ];
+      }
+    }
+
+    return [ wImg, hImg ];
+  }
